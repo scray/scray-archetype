@@ -9,9 +9,7 @@ import org.apache.spark.streaming.kafka.KafkaUtils
 import org.apache.spark.storage.StorageLevel
 import kafka.serializer.Decoder
 import kafka.serializer.StringDecoder
-import com.seeburger.bdq.spark.serializers.GenericKafkaKryoSerializer
-import com.seeburger.bdq.spark.data.CasAxKafkaJournalEntry
-import com.seeburger.bdq.spark.serializers.CasAxKafkaJournalEntryDecoder
+import ${package}.serializers.GenericKafkaKryoSerializer
 
 object StreamingDStreams {
   
@@ -43,16 +41,7 @@ object StreamingDStreams {
       implicit k: ClassTag[K], v: ClassTag[V]): Option[DStream[(K, V)]] = 
     getKafkaStreamSource[K, V, GenericKafkaKryoSerializer[K], GenericKafkaKryoSerializer[V]](
         ssc, kafkaDStreamURL, kafkaTopic, storageLevel)
-  
-  /**
-   * initializes distributed stream source for a Kafka source, which serializes its objects with Kryo.writeClassAndObject
-   */
-  def getKafkaCasAxSource(ssc: StreamingContext, kafkaDStreamURL: Option[String], kafkaTopic: Option[Map[String, Int]], 
-      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2): Option[DStream[(String, CasAxKafkaJournalEntry)]] = 
-    getKafkaStreamSource[String, CasAxKafkaJournalEntry, StringDecoder, CasAxKafkaJournalEntryDecoder](
-        ssc, kafkaDStreamURL, kafkaTopic, storageLevel)
-
-        
+          
   /**
    * initializes distributed stream source for hdfs text files
    */
