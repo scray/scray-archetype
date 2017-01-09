@@ -84,12 +84,12 @@
       <version>0.8.0</version>
     </dependency>
     <dependency>
-      <groupId>scray</groupId>
+      <groupId>org.scray</groupId>
       <artifactId>scray-cassandra</artifactId>
       <version>${scray.version}</version>
     </dependency>
       <dependency>
-      <groupId>scray</groupId>
+      <groupId>org.scray</groupId>
       <artifactId>scray-querying</artifactId>
       <version>${scray.version}</version>
     </dependency>
