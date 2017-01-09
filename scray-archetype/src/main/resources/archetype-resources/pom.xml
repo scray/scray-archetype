@@ -27,6 +27,7 @@
     <scala.logging.version>2.1.2</scala.logging.version>
     <spark.version>1.6.0</spark.version>
     <slf4j.version>1.7.7</slf4j.version>
+    <scray.version>0.9.5</scray.version>
   </properties>
 
   <dependencies>
@@ -85,12 +86,12 @@
     <dependency>
       <groupId>scray</groupId>
       <artifactId>scray-cassandra</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${scray.version}</version>
     </dependency>
       <dependency>
       <groupId>scray</groupId>
       <artifactId>scray-querying</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${scray.version}</version>
     </dependency>
 
     <!-- Test -->
