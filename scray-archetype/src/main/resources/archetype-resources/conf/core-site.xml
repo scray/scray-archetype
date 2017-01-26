@@ -1,0 +1,7 @@
+<configuration>
+	<property>
+		<name>fs.defaultFS</name>
+		<value>${hdfs-uri}</value>
+		<description>NameNode URI</description>
+	</property>
+</configuration>
