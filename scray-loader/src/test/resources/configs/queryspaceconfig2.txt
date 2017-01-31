@@ -1,4 +1,0 @@
-name WhateverYouLike version 1
-
-table { test, "BLA", "SCHWAETZ" }
-
