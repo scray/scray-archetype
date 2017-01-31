@@ -22,10 +22,10 @@
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
     <encoding>UTF-8</encoding>
-    <scala.version>2.10.6</scala.version>
-    <scala.compat.version>2.10</scala.compat.version>
+    <scala.version>2.11.8</scala.version>
+    <scala.compat.version>2.11</scala.compat.version>
     <scala.logging.version>2.1.2</scala.logging.version>
-    <spark.version>1.6.0</spark.version>
+    <spark.version>2.0.0</spark.version>
     <slf4j.version>1.7.7</slf4j.version>
     <scray.version>0.9.5</scray.version>
   </properties>
