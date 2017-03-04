@@ -21,7 +21,7 @@ fi
 SPARK_BINARY_URL="http://archive.apache.org/dist/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.7.tgz"
 
 
-EXTRACTED_SPARK_FOLDER_NAME="spark-2.0.0-bin-hadoop2.7.tgz"
+EXTRACTED_SPARK_FOLDER_NAME="spark-2.0.0-bin-hadoop2.7"
 
 echo "SPARK_HOME="$MY_FULL_PATH/$EXTRACTED_SPARK_FOLDER_NAME
 export SPARK_HOME=$MY_FULL_PATH/$EXTRACTED_SPARK_FOLDER_NAME
