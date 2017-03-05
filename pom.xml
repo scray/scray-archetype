@@ -5,8 +5,8 @@
     <packaging>jar</packaging>
  
     <parent>
-        <groupId>scray</groupId>
+        <groupId>org.scray</groupId>
         <artifactId>scray</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.9.5</version>
     </parent>
 </project>
