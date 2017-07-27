@@ -26,6 +26,6 @@ The options <code>--master</code> with the Spark master URL and <code>--total-ex
     bin/submit-job.sh --master <URL> --total-executor-cores <NUMBER> <program arguments specified in the job>
 
 For the url of the master there are several options:
-- <code>spark://&lt;IP&gt;:&lt;Port&gt;</code> (while port deafaults to 7077)
+- <code>spark://&lt;IP&gt;:&lt;Port&gt;</code> (default port 7077)
 - <code>yarn-client</code> (run a job with a local client but execute on a Hadoop yarn cluster of spark workers)
 - <code>yarn-cluster</code> (run the client and the workers of the Spark job on a Hadoop yarn cluster)
