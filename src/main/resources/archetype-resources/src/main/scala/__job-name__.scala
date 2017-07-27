@@ -129,8 +129,10 @@ object ${job-name} extends LazyLogging {
           case true =>  batch(config)
           case false => stream(config)
         }
-      case None =>
-        // do nothing but displaying some help message
+      case None => {
+        println("Error while parsing command line parameters")
+        Options.parser.showUsage
+      }
     }
   }
 
