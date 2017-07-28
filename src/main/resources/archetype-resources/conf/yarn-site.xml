@@ -19,4 +19,8 @@
 		<name>yarn.resourcemanager.address</name>
 		<value>${yarn-resourcemanager}:8032</value>
 	</property>
+	<property>
+		<name>yarn.resourcemanager.webapp.address</name>
+		<value>${yarn-resourcemanager}:8089</value>
+	</property>
 </configuration>
