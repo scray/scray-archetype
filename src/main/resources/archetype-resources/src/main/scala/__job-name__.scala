@@ -131,7 +131,7 @@ object ${job-name} extends LazyLogging {
         }
       case None => {
         println("Error while parsing command line parameters")
-        Options.parser.showUsage
+        Options.parse(args)
       }
     }
   }

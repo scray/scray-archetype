@@ -40,40 +40,13 @@ class StreamingJob(@transient val ssc: StreamingContext, jobInfo: JobInfo[Statem
    * output format and save
    */
   def runTuple[T <: DStream[(Option[AggregationKey], Long)]](dstream: T, host: Option[String], keyspace: Option[String], master: String) = {  
-    // perform aggregations on current
+
     val processedStream = dstream.
       filter(x => x._1.isDefined).
-      mapWithState(mapStateWithAggregations())
-    writeStreamRDD(processedStream)
+      println
   }
 
-  /**
-   * transforms content of a dstream into the output-format for writing
-   * TODO: implement output function
-   */
-  def writeStreamRDD[T <: DStream[(AggregationKey, Long)]](dstream: T) = {
-    dstream.map(x => StreamingJob.saveDataMap((x._1, x._2))).
-    // example how to save data to Cassandra: saveToCassandra(StreamingJob.keyspace, StreamingJob.tableonline)
-    foreachRDD { x =>
-      println(x)
-    }
-  }
 
-  /**
-   * TODO: perform the streaming function on state objects
-   */
-  def mapStateWithAggregations(): StateSpec[Option[AggregationKey], Long, Long, (AggregationKey, Long)] = 
-    StateSpec.function[Option[AggregationKey], Long, Long, (AggregationKey, Long)] {
-      (key: Option[AggregationKey], value: Option[Long], state: State[Long]) => 
-        val count = state.exists() match {
-          case true =>
-            state.update(state.get + value.size)
-            state.get + value.size
-          case false =>
-            state.update(value.size)
-            value.size
-        }
-        (key.get, count)
   }
 }
 

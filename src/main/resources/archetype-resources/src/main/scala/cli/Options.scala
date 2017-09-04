@@ -49,12 +49,14 @@ object Options extends LazyLogging {
       if(!batch) {
         kafkaDStreamURL.flatMap { kafka => 
           if(kafkaTopic.isDefined) {
+            println("No Kafka topic defined")
             config
           } else {
             None
           }
         }.orElse {
           if(hdfsDStreamURL.isDefined) {
+	  println("No hdfs url defined")
             config  
           } else {
             None
