@@ -1,46 +1,67 @@
 package ${package}
 
-import org.apache.spark.streaming.dstream.InputDStream
-import org.apache.spark.streaming.StreamingContext
-import org.apache.hadoop.mapreduce.InputFormat
-import scala.reflect.ClassTag
-import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.streaming.kafka.KafkaUtils
-import org.apache.spark.storage.StorageLevel
-import kafka.serializer.Decoder
-import kafka.serializer.StringDecoder
-import ${package}.serializers.GenericKafkaKryoSerializer
+import scala.collection.mutable.HashMap
 
-object StreamingDStreams {
+import org.apache.kafka.clients.consumer.ConsumerRecord
+import org.apache.kafka.common.serialization.StringDeserializer
+import org.apache.spark.storage.StorageLevel
+import org.apache.spark.streaming.StreamingContext
+import org.apache.spark.streaming.dstream.DStream
+import org.apache.spark.streaming.dstream.InputDStream
+import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
+import org.apache.spark.streaming.kafka010.KafkaUtils
+import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
+import com.typesafe.scalalogging.slf4j.LazyLogging
+
+
+object StreamingDStreams extends LazyLogging {
   
-  val KAFKA_CONSUMER_GROUP = "SparkStreamMsgTypes"
-  
-  /**
-   * initializes distributed stream source for a generic Kafka source, which needs serializers to be specified
-   */
-  def getKafkaStreamSource[K, V, U <: Decoder[_], T <: Decoder[_]](ssc: StreamingContext, kafkaDStreamURL: Option[String], 
-      kafkaTopic: Option[Map[String, Int]], storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2)(
-      implicit k: ClassTag[K], v: ClassTag[V], u: ClassTag[U], t: ClassTag[T]): Option[DStream[(K, V)]] = {
-    val kafkaParams = Map[String, String]("zookeeper.connect" -> kafkaDStreamURL.get, 
-        "group.id" -> KAFKA_CONSUMER_GROUP)
-    Some(KafkaUtils.createStream[K, V, U, T](ssc, kafkaParams, kafkaTopic.get, storageLevel))
-  }
+  val KAFKA_CONSUMER_GROUP = "${job-name}"
   
   /**
    * initializes distributed stream source for a (String, String) Kafka source
    */
-  def getKafkaStringSource(ssc: StreamingContext, kafkaDStreamURL: Option[String], kafkaTopic: Option[Map[String, Int]], 
-      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2): Option[DStream[(String, String)]] = 
-    getKafkaStreamSource[String, String, StringDecoder, StringDecoder](ssc, kafkaDStreamURL, kafkaTopic, storageLevel)
-  
-  /**
-   * initializes distributed stream source for a Kafka source, which serializes its objects with Kryo.writeClassAndObject
-   */
-  def getKafkaKryoSource[K, V](ssc: StreamingContext, kafkaDStreamURL: Option[String], kafkaTopic: Option[Map[String, Int]], 
-      storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2)(
-      implicit k: ClassTag[K], v: ClassTag[V]): Option[DStream[(K, V)]] = 
-    getKafkaStreamSource[K, V, GenericKafkaKryoSerializer[K], GenericKafkaKryoSerializer[V]](
-        ssc, kafkaDStreamURL, kafkaTopic, storageLevel)
+   def getKafkaStringSource(
+    ssc: StreamingContext,
+    bootstrapServer: Option[String],
+    kafkaTopics: Array[String],
+    storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2,
+    additionalKafkaParameters: scala.collection.mutable.Map[String, Object] = new HashMap[String, Object]()): Option[InputDStream[ConsumerRecord[String, String]]] = {
+
+    // Set default values
+    additionalKafkaParameters.put("bootstrap.servers",
+      bootstrapServer.getOrElse({
+        logger.warn("No bootstrap server defined. Use 127.0.0.1")
+        "127.0.0.1"
+      }))
+
+    additionalKafkaParameters.get("key.deserializer").getOrElse(
+      additionalKafkaParameters.put("key.deserializer", classOf[StringDeserializer])
+    )
+
+    additionalKafkaParameters.get("value.deserializer").getOrElse(
+      additionalKafkaParameters.put("value.deserializer", classOf[StringDeserializer])
+    )
+   
+    additionalKafkaParameters.get("group.id").getOrElse(
+      additionalKafkaParameters.put("group.id", KAFKA_CONSUMER_GROUP)
+    )
+    
+    additionalKafkaParameters.get("enable.auto.commit").getOrElse(
+      additionalKafkaParameters.put("enable.auto.commit", KAFKA_CONSUMER_GROUP)
+    )
+    
+    additionalKafkaParameters.get("auto.offset.reset").getOrElse(
+      additionalKafkaParameters.put("auto.offset.reset", (false: java.lang.Boolean))
+    )
+
+    val stream = KafkaUtils.createDirectStream[String, String](
+      ssc,
+      PreferConsistent,
+      Subscribe[String, String](kafkaTopics, additionalKafkaParameters))
+
+    Some(stream)
+  }
           
   /**
    * initializes distributed stream source for hdfs text files

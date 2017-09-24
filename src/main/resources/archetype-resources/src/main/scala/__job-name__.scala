@@ -28,10 +28,16 @@ object ${job-name} extends LazyLogging {
   /**
    * creates a Spark Streaming context
    */
-  def setupSparkStreamingConfig(masterURL: String, seconds: Int): () => StreamingContext = () => { 
+  def setupSparkStreamingConfig(masterURL: String, seconds: Int, config: Config, jobInfo: CassandraJobInfo): () => StreamingContext = () => { 
     logger.info(s"Connecting streaming context to Spark on $masterURL and micro batches with $seconds s")
     val conf = new SparkConf().setAppName("Stream: " + this.getClass.getName).setMaster(masterURL)
-    new StreamingContext(conf, Seconds(seconds))
+    val ssc = new StreamingContext(conf, Seconds(seconds))
+    
+    ssc.checkpoint(config.checkpointPath)
+    val streamingJob = new StreamingJob(ssc, jobInfo)
+    val dstream = streamSetup(ssc, streamingJob, config)
+    
+    ssc
   }
   
   def setupSparkBatchConfig(masterURL: String): () => SparkContext = () => {
@@ -92,10 +98,8 @@ object ${job-name} extends LazyLogging {
     val syncTable = new OnlineBatchSyncCassandra(config.cassandraHost.getOrElse("127.0.0.1"))
     val jobInfo = new CassandraJobInfo("${job-name}", config.numberOfBatchVersions, config.numberOfOnlineVersions)
     if(syncTable.startNextOnlineJob(jobInfo).isSuccess) {
-      val ssc = StreamingContext.getOrCreate(config.checkpointPath, setupSparkStreamingConfig(config.master, config.seconds))
-      ssc.checkpoint(config.checkpointPath)
-      val streamingJob = new StreamingJob(ssc, jobInfo)
-      val dstream = streamSetup(ssc, streamingJob, config)
+      val ssc = StreamingContext.getOrCreate(config.checkpointPath, setupSparkStreamingConfig(config.master, config.seconds, config, jobInfo))
+
       // prepare to checkpoint in order to use some state (updateStateByKey)
       ssc.start()
       // TODO: write out zk information for closing this app  

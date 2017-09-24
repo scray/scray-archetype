@@ -43,10 +43,7 @@ class StreamingJob(@transient val ssc: StreamingContext, jobInfo: JobInfo[Statem
 
     val processedStream = dstream.
       filter(x => x._1.isDefined).
-      println
-  }
-
-
+      map(println)
   }
 }
 

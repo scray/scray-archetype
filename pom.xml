@@ -7,6 +7,6 @@
     <parent>
         <groupId>org.scray</groupId>
         <artifactId>scray-parent</artifactId>
-        <version>0.10.0</version>
+        <version>0.10.1-SNAPSHOT</version>
     </parent>
 </project>
