@@ -36,15 +36,11 @@ import com.datastax.driver.core.Statement
 class StreamingJob(@transient val ssc: StreamingContext, jobInfo: JobInfo[Statement, Insert, ResultSet]) extends LazyLogging with Serializable {
   
   /**
-   * main job execution method: filter for wrong keys, perform aggregation with state changes, transform data into
-   * output format and save
+   * Print received strings and count them
    */
-  def runTuple[T <: DStream[(Option[AggregationKey], Long)]](dstream: T, host: Option[String], keyspace: Option[String], master: String) = {  
-
-    val processedStream = dstream.
-      filter(x => x._1.isDefined).
-      map(println)
-  }
+   def runTuple[T <:  DStream[String]](dstream: T, host: Option[String], keyspace: Option[String], master: String) = {  
+     dstream.map(data => {println(data); data}).count().print()    
+   }
 }
 
 object StreamingJob {

@@ -22,43 +22,37 @@ object StreamingDStreams extends LazyLogging {
    * initializes distributed stream source for a (String, String) Kafka source
    */
    def getKafkaStringSource(
-    ssc: StreamingContext,
-    bootstrapServer: Option[String],
-    kafkaTopics: Array[String],
-    storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2,
-    additionalKafkaParameters: scala.collection.mutable.Map[String, Object] = new HashMap[String, Object]()): Option[InputDStream[ConsumerRecord[String, String]]] = {
-
-    // Set default values
-    additionalKafkaParameters.put("bootstrap.servers",
-      bootstrapServer.getOrElse({
-        logger.warn("No bootstrap server defined. Use 127.0.0.1")
-        "127.0.0.1"
-      }))
-
-    additionalKafkaParameters.get("key.deserializer").getOrElse(
-      additionalKafkaParameters.put("key.deserializer", classOf[StringDeserializer])
-    )
-
-    additionalKafkaParameters.get("value.deserializer").getOrElse(
-      additionalKafkaParameters.put("value.deserializer", classOf[StringDeserializer])
-    )
-   
-    additionalKafkaParameters.get("group.id").getOrElse(
-      additionalKafkaParameters.put("group.id", KAFKA_CONSUMER_GROUP)
-    )
-    
-    additionalKafkaParameters.get("enable.auto.commit").getOrElse(
-      additionalKafkaParameters.put("enable.auto.commit", KAFKA_CONSUMER_GROUP)
-    )
-    
-    additionalKafkaParameters.get("auto.offset.reset").getOrElse(
-      additionalKafkaParameters.put("auto.offset.reset", (false: java.lang.Boolean))
-    )
-
-    val stream = KafkaUtils.createDirectStream[String, String](
-      ssc,
-      PreferConsistent,
-      Subscribe[String, String](kafkaTopics, additionalKafkaParameters))
+     ssc: StreamingContext,
+     bootstrapServer: Option[String],
+     kafkaTopics: Array[String],
+     storageLevel: StorageLevel = StorageLevel.MEMORY_AND_DISK_SER_2,
+     additionalKafkaParameters: scala.collection.mutable.Map[String, Object] = new HashMap[String, Object]()): Option[DStream[String]] = {
+  
+     // Set default values
+     additionalKafkaParameters.put("bootstrap.servers",
+       bootstrapServer.getOrElse({
+         logger.warn("No bootstrap server defined. Use 127.0.0.1")
+         "127.0.0.1:9092"
+       })
+     )
+  
+     additionalKafkaParameters.get("key.deserializer").getOrElse(
+       additionalKafkaParameters.put("key.deserializer", classOf[StringDeserializer])
+     )
+  
+     additionalKafkaParameters.get("value.deserializer").getOrElse(
+       additionalKafkaParameters.put("value.deserializer", classOf[StringDeserializer])
+     )
+     
+     additionalKafkaParameters.get("group.id").getOrElse(
+       additionalKafkaParameters.put("group.id", KAFKA_CONSUMER_GROUP)
+     )
+  
+     val stream = KafkaUtils.createDirectStream[String, String](
+       ssc,
+       PreferConsistent,
+       Subscribe[String, String](kafkaTopics, additionalKafkaParameters)).map(_.value()
+     )
 
     Some(stream)
   }

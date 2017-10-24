@@ -45,30 +45,36 @@ object ${job-name} extends LazyLogging {
     new SparkContext(new SparkConf().setAppName("Batch: " + this.getClass.getName).setMaster(masterURL))
   }
 
-  val queue = new Queue[RDD[(String, String, String, String)]]()
+  val queue = new Queue[RDD[String]]()
 
   def streamSetup(ssc: StreamingContext, streamingJob: StreamingJob, config: Config): Unit = {
-    /* example how to stream from Kafka
-    val dstream = config.kafkaDStreamURL.flatMap { url =>.
-        StreamingDStreams.getKafkaCasAxSource(ssc, config.kafkaDStreamURL, config.kafkaTopic).map(_.map(_._2)) }.getOrElse {
-          // shall fail if no stream source was provided on the command line
-          config.hdfsDStreamURL.flatMap { _ => StreamingDStreams.getTextStreamSource(ssc, config.hdfsDStreamURL) }.
-          map{_.map{ casaxStr =>
-            val bytes = casaxStr.getBytes("UTF-8")
-            decoder.fromBytes(bytes)}}.get
-    } */
-    val dstream = ssc.queueStream(queue)
+    // example how to stream from Kafka
+    val dstream = config.kafkaDStreamURL.flatMap { url =>
+      {
+        StreamingDStreams.getKafkaStringSource(
+          ssc,
+          config.kafkaDStreamURL,
+          config.kafkaTopic.getOrElse({
+            logger.warn("Kakfa topic not defined. Use scray")
+            Array("scray")
+          }))
+      }
+    }.getOrElse(
+        {
+          logger.error(s"Unable to create kafka stream. Use predefined example data from ${this.getClass.getName}")
+          ssc.queueStream(queue)
+        }
+    )
+    
     dstream.checkpoint(Duration(config.checkpointDuration))
-    streamingJob.runTuple(dstream.map(x => (StreamingJob.buildAggregationKey(x), 1L)), config.cassandraHost, config.cassandraKeyspace, ssc.sparkContext.master)
+    streamingJob.runTuple(dstream, config.cassandraHost, config.cassandraKeyspace, ssc.sparkContext.master)    
   }
 
   /**
    * TODO: remove, since this is only used for the initial setup
    */
   def streamSomeBatches(ssc: StreamingContext) = {
-    val data = Array(("bla1", "blubb1", "org", "Tokio"),
-                    ("bla1", "blubb2", "com", "Johannisburg"),
-                    ("bla2", "blubb1", "net", "Rio"))
+    val data = Array("test1", "test2", "test3", "test4", "test5", "test6", "test7", "test8")
     (0 until 40).foreach { _ =>
       queue += ssc.sparkContext.parallelize(data)
     }

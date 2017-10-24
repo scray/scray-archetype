@@ -11,14 +11,14 @@ object Options extends LazyLogging {
   /**
    * Parser to parse CLI args
    */
-  val parser = new OptionParser[Config]("${job-name}") {
-    head("${job-name}", "${version}")
+  val parser = new OptionParser[Config]("ScrayLogAnomalyDetector") {
+    head("ScrayLogAnomalyDetector", "1.0-SNAPSHOT")
     opt[Unit]('b', "batch") action { (x, c) =>
       c.copy(batch = true) } text("provide URL to Kafka Broker if sourcing from Kafka is desired")
     opt[String]('k', "kafka") action { (x, c) =>
       c.copy(kafkaDStreamURL = Some(x)) } text("provide URL to Kafka Broker if sourcing from Kafka is desired")
-    opt[Map[String, Int]]('t', "kafka-topics") action { (x, c) =>
-      c.copy(kafkaTopic = Some(x)) } text("provide URL to Kafka Broker if sourcing from Kafka is desired")
+    opt[String]('t', "kafka-topic") action { (x, c) =>
+      c.copy(kafkaTopic = Some(Array(x))) } text("provide Kafka topic to consume from")
     opt[String]('h', "hdfs") action { (x, c) =>
       c.copy(hdfsDStreamURL = Some(x)) } text("provide URL into HDFS if sourcing from HDFS is desired")
     opt[String]('m', "master") required() action { (x, c) =>
