@@ -46,7 +46,7 @@ class StreamingJob(@transient val ssc: StreamingContext, jobInfo: JobInfo[Statem
 object StreamingJob {
   
   /**
-   * TODO: setup a key for the aggregation function using the key class defined in data
+   * setup a key for the aggregation function using the key class defined in data
    */
   def buildAggregationKey(row: (String, String, String, String)): Option[AggregationKey] = {
     Some(AggregationKey(row._1, row._2, row._3, row._4))
