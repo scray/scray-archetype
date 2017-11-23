@@ -58,6 +58,6 @@ if [ -z "$CORES" ]; then
   exit 3
 fi
 
-exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
+exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
 
 cd $ORIGDIR
