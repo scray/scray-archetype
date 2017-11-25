@@ -30,6 +30,12 @@
         <include>**/*.properties</include>
       </includes>
     </fileSet>
+    <fileSet encoding="UTF-8" filtered="true" packaged="false">
+      <directory>conf</directory>
+      <includes>
+        <include>**/*.json</include>
+      </includes>
+    </fileSet>
     <fileSet encoding="UTF-8" filtered="true" packaged="true">
       <directory>src/main/scala</directory>
       <includes>
