@@ -46,7 +46,7 @@ class ConfigurationReader(confFileName: String = "job-parameter.json") extends L
     }).flatten
     
     configuration.getOrElse({
-        logger.warn(s"No configuration file found. Use default configuration ${JobParameter()}")
+        logger.warn(s"No configuration file found. Use default configuration ${JobParameter}")
         JobParameter()
       })
 
