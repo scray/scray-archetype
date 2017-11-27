@@ -36,7 +36,8 @@ class ConfigurationReader(confFileName: String = "job-parameter.json") extends L
         configurationString.append(line)
 
         while (line != null) {
-          configurationString.append(br.readLine())
+          line = br.readLine()
+          configurationString.append(line)
         }
       } finally {
         br.close();
