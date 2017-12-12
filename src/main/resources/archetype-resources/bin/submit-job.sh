@@ -9,6 +9,7 @@ cd $BASEDIR/..
 function usage {
   echo -e "Usage: $0 <Options> <Job arguments>\n\
 Options:\n\
+  --local-mode			    instantiate and use local Spark.\n\
   --master <URL>                    specify spark master. Required!\n\
   --total-executor-cores <NUMBER>   number of cores to use. Required!\n\
   --help                            display this usage information\n\
@@ -37,6 +38,9 @@ while [[ $# > 0 ]]; do
   elif [[ $1 == "--total-executor-cores" ]]; then
     CORES=$2
     shift 2
+  elif [[ $1 == "--local-mode" ]]; then
+    LOCAL_MODE=true
+    shift 2
   elif [[ $1 == "--help" ]]; then
     usage
     exit 0
@@ -58,6 +62,12 @@ if [ -z "$CORES" ]; then
   exit 3
 fi
 
-exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
-
+if [ LOCAL_MODE = true  ]; then
+  export SPARK_MASTER_HOST=127.0.0.1
+  $SPARK_HOME/sbin/start-master.sh
+  $SPARK_HOME/sbin/start-slave.sh
+  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
+else
+  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
+fi
 cd $ORIGDIR
