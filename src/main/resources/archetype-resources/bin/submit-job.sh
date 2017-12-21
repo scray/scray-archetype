@@ -62,7 +62,7 @@ if [ -z "$CORES" ]; then
   exit 3
 fi
 
-if [ LOCAL_MODE = true  ]; then
+if [ $LOCAL_MODE = true  ]; then
   export SPARK_MASTER_HOST=127.0.0.1
   $SPARK_HOME/sbin/start-master.sh
   $SPARK_HOME/sbin/start-slave.sh
