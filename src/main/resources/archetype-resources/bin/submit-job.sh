@@ -40,7 +40,7 @@ while [[ $# > 0 ]]; do
     shift 2
   elif [[ $1 == "--local-mode" ]]; then
     LOCAL_MODE=true
-    shift 2
+    shift 1 
   elif [[ $1 == "--help" ]]; then
     usage
     exit 0
