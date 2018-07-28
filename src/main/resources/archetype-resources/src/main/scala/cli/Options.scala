@@ -11,8 +11,8 @@ object Options extends LazyLogging {
   /**
    * Parser to parse CLI args
    */
-  val parser = new OptionParser[Config]("ScrayLogAnomalyDetector") {
-    head("ScrayLogAnomalyDetector", "1.0-SNAPSHOT")
+  val parser = new OptionParser[Config]("${job-name}") {
+    head("Parameters for ${job-name}", "${version}")
     opt[Unit]('b', "batch") action { (x, c) =>
       c.copy(batch = true) } text("provide URL to Kafka Broker if sourcing from Kafka is desired")
     opt[String]('k', "kafka") action { (x, c) =>
@@ -56,7 +56,7 @@ object Options extends LazyLogging {
           }
         }.orElse {
           if(hdfsDStreamURL.isDefined) {
-	  println("No hdfs url defined")
+	        println("No hdfs url defined")
             config  
           } else {
             None
