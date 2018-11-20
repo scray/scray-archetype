@@ -1,4 +1,4 @@
-package org.scray.example.conf
+package ${package}.conf
 
 import scala.io.Source._
 import com.fasterxml.jackson.databind.ObjectMapper
