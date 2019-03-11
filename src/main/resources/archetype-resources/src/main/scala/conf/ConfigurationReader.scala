@@ -5,7 +5,7 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import com.typesafe.scalalogging.LazyLogging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 
 class ConfigurationReader(confFileName: String = "job-parameter.json") extends LazyLogging {

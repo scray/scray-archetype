@@ -6,16 +6,8 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream.InputDStream
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import ${package}.cli.{Config, Options}
+import com.seeburger.research.kafka.cli.{Config, Options}
 import scala.collection.mutable.Queue
-import scray.querying.sync.ArbitrarylyTypedRows
-import scray.querying.sync.Column
-import scray.cassandra.sync.CassandraImplementation._
-import scray.querying.sync.OnlineBatchSync
-import scray.cassandra.sync.OnlineBatchSyncCassandra
-import scray.querying.sync.JobInfo
-import scray.querying.sync.AbstractRow
-import scray.cassandra.sync.CassandraJobInfo
 import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Statement
@@ -28,13 +20,13 @@ object ${job-name} extends LazyLogging {
   /**
    * creates a Spark Streaming context
    */
-  def setupSparkStreamingConfig(masterURL: String, seconds: Int, config: Config, jobInfo: CassandraJobInfo): () => StreamingContext = () => { 
+  def setupSparkStreamingConfig(masterURL: String, seconds: Int, config: Config): () => StreamingContext = () => { 
     logger.info(s"Connecting streaming context to Spark on $masterURL and micro batches with $seconds s")
     val conf = new SparkConf().setAppName("Stream: " + this.getClass.getName).setMaster(masterURL)
     val ssc = new StreamingContext(conf, Seconds(seconds))
     
     ssc.checkpoint(config.checkpointPath)
-    val streamingJob = new StreamingJob(ssc, jobInfo)
+    val streamingJob = new StreamingJob(ssc)
     val dstream = streamSetup(ssc, streamingJob, config)
     
     ssc
@@ -85,15 +77,9 @@ object ${job-name} extends LazyLogging {
    */
   def batch(config: Config) = {
     logger.info(s"Using Batch mode.")
-    val syncTable = new OnlineBatchSyncCassandra(config.cassandraHost.getOrElse("127.0.0.1"))
-    val jobInfo = new CassandraJobInfo("${job-name}", config.numberOfBatchVersions, config.numberOfOnlineVersions)
-    if(syncTable.startNextBatchJob(jobInfo).isSuccess) {
       val sc = setupSparkBatchConfig(config.master)()
-      val batchJob = new BatchJob(sc, jobInfo)
+      val batchJob = new BatchJob(sc)
       batchJob.batchAggregate()
-    } else {
-      logger.error("Batch table is locked.") 
-    }
   }
 
   /**
@@ -101,10 +87,7 @@ object ${job-name} extends LazyLogging {
    */
   def stream(config: Config) = {
     logger.info(s"Using HDFS-URL=${config.hdfsDStreamURL} and Kafka-URL=${config.kafkaDStreamURL}")
-    val syncTable = new OnlineBatchSyncCassandra(config.cassandraHost.getOrElse("127.0.0.1"))
-    val jobInfo = new CassandraJobInfo("${job-name}", config.numberOfBatchVersions, config.numberOfOnlineVersions)
-    if(syncTable.startNextOnlineJob(jobInfo).isSuccess) {
-      val ssc = StreamingContext.getOrCreate(config.checkpointPath, setupSparkStreamingConfig(config.master, config.seconds, config, jobInfo))
+      val ssc = StreamingContext.getOrCreate(config.checkpointPath, setupSparkStreamingConfig(config.master, config.seconds, config))
 
       // prepare to checkpoint in order to use some state (updateStateByKey)
       ssc.start()
@@ -114,26 +97,11 @@ object ${job-name} extends LazyLogging {
       streamSomeBatches(ssc)
   
       ssc.awaitTermination()
-    } else {
-      logger.error("Streaming table locked")
-    }
-  }
-  
-  object ExampleTable extends ArbitrarylyTypedRows {
-    val time = new Column[Long]("time")
-    val name = new Column[String]("name")
-    val sum = new Column[Int]("sum")
-         
-    override val columns = time :: name :: sum :: Nil
-    override val primaryKey = s"(${time.name})"
-    override val indexes = None
   }
 
   def main(args : Array[String]) = {
-    Options.parse(args) match {
+   Options.parse(args) match {
       case Some(config) =>
-       val syncTable: OnlineBatchSync[Statement, Insert, ResultSet] = new OnlineBatchSyncCassandra(config.cassandraHost.getOrElse(config.cassandraHost.getOrElse("127.0.0.1")))
-       syncTable.initJob(new CassandraJobInfo("${job-name}"), ExampleTable)
 
         config.batch match {
           case true =>  batch(config)

@@ -5,12 +5,8 @@ import org.apache.spark.SparkContext
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext._
 import org.apache.spark._
-import ${package}.data.AggregationKey
+import com.seeburger.research.kafka.data.AggregationKey
 import org.apache.spark.rdd.RDD
-import scray.cassandra.sync.CassandraImplementation._
-import scray.querying.sync.OnlineBatchSync
-import scray.cassandra.sync.OnlineBatchSyncCassandra
-import scray.querying.sync.JobInfo
 import scala.util.Failure
 import scala.util.Success
 import com.datastax.driver.core.querybuilder.Insert
@@ -20,9 +16,8 @@ import com.datastax.driver.core.Statement
 /**
  * Class containing all the batch stuff
  */
-class BatchJob(@transient val sc: SparkContext, jobInfo: JobInfo[Statement, Insert, ResultSet]) extends LazyLogging with Serializable {
+class BatchJob(@transient val sc: SparkContext) extends LazyLogging with Serializable {
   println(sc.getConf.get("spark.cassandra.connection.host"))
-  val syncTable = new OnlineBatchSyncCassandra(sc.getConf.get("spark.cassandra.connection.host"))
 
   /**
    * get the intial rdd to load data from
@@ -46,10 +41,6 @@ class BatchJob(@transient val sc: SparkContext, jobInfo: JobInfo[Statement, Inse
       map(x => StreamingJob.saveDataMap(x)).
       // example howto save into Cassandra: saveToCassandra(StreamingJob.keyspace, StreamingJob.tablebatch)
       foreach(x => println(x))
-    syncTable.completeBatchJob(jobInfo) match {
-      case Success(u) => logger.info("Job marked as completed")
-      case Failure(ex) => logger.error(s"Error while completing job ${ex.getMessage}")
-    }
   }
 
   /**
