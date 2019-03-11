@@ -1,4 +1,4 @@
-package org.scray.example.conf
+package ${package}.conf
 
 /**
  * container class for configuration parameters.

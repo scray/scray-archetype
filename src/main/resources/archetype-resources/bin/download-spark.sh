@@ -1,18 +1,18 @@
 #!/bin/bash
 
-MY_PATH_REL="`dirname \"$0\"`"
-MY_FULL_PATH="`( cd \"$MY_PATH_REL\" && pwd )`"
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASEDIR=`eval "cd $BINDIR/../;pwd;cd - > /dev/null"`
 
-ORIGDIR=$(pwd)
-
-BASEDIR=$(dirname $(readlink -f $0))
-cd $BASEDIR/..
-
-SPARK_VERSION=2.2.0
+SPARK_VERSION=2.3.2
 HADOOP_VERSION=2.7
+SPARK_BINARY_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz"
+
+EXTRACTED_SPARK_FOLDER_NAME="spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION"
+
+
 
 if [ ! -z $SPARK_HOME ]; then
- echo "WARN: SPARK_HOME variable ist set to $SPARK_HOME. This version will be used for spark-submit" 
+ echo "WARN: SPARK_HOME variable is set to $SPARK_HOME. This version will be used for spark-submit" 
 fi
 
 if [ ! -z $SPARK_SUBMIT ]; then
@@ -21,24 +21,24 @@ if [ ! -z $SPARK_SUBMIT ]; then
   exit 1
 fi
 
-SPARK_BINARY_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz"
 
-EXTRACTED_SPARK_FOLDER_NAME="spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION"
 
-echo "SPARK_HOME="$MY_FULL_PATH/$EXTRACTED_SPARK_FOLDER_NAME
-export SPARK_HOME=$MY_FULL_PATH/$EXTRACTED_SPARK_FOLDER_NAME
+SPARK_HOME=$BASEDIR/lib/$EXTRACTED_SPARK_FOLDER_NAME
+echo "SPARK_HOME="$SPARK_HOME
+export SPARK_HOME=$SPARK_HOME
 
-echo "YARN_CONF_DIR="$MY_FULL_PATH/../conf
-export YARN_CONF_DIR=$MY_FULL_PATH/../conf
+YARN_CONF_DIR=$BASEDIR/conf
+echo "YARN_CONF_DIR="$YARN_CONF_DIR
+export YARN_CONF_DIR=$YARN_CONF_DIR
 
 
 function downloadSparkBinaries {
         echo $SPARK_BINARY_URL
-        wget $SPARK_BINARY_URL -O $MY_FULL_PATH/spark.tgz && mv $MY_FULL_PATH/spark.tgz $MY_FULL_PATH/../lib/
-        tar -xvzf $MY_FULL_PATH/../lib/spark.tgz -C $MY_FULL_PATH/../lib/
+        wget $SPARK_BINARY_URL -O $BASEDIR/lib/spark.tgz
+        tar -xvzf $BASEDIR/lib/spark.tgz -C $BASEDIR/lib/
 }
 
-if [ ! -e "$MY_FULL_PATH/spark.tgz" ]
+if [ ! -e "$SPARK_HOME" ]
 then
 	downloadSparkBinaries  
 else 

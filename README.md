@@ -21,10 +21,14 @@ Archetypes are enhancements of maven ("plugins") that can generate new projects.
 
 ### Running the jobs:
 
+#### Run in local Spark Standalone Mode  
+  A local spark node will be started and this job will be executed on this node.
+  Example:     
+    ./bin/submit-job.sh --local-mode --master spark://<YOUR_LOCAL_IP>:7077 --total-executor-cores 4 -b -m spark://<YOUR_LOCAL_IP>:7077
+
 The options <code>--master</code> with the Spark master URL and <code>--total-executor-cores</code> providing the number of cores are required by the runner script.
 
-    bin/submit-job.sh --master <URL> --total-executor-cores <NUMBER> <program arguments specified in the job>
-
+    
 For the url of the master there are several options:
 - <code>spark://&lt;IP&gt;:&lt;Port&gt;</code> (default port 7077)
 - <code>yarn-client</code> (run a job with a local client but execute on a Hadoop yarn cluster of spark workers)

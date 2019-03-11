@@ -1,10 +1,16 @@
 #set( $symbol_dollar = '$' )
 #!/bin/bash
 
-ORIGDIR=$(pwd)
+BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BASEDIR=`eval "cd $BINDIR/../;pwd;cd - > /dev/null"`
 
-BASEDIR=$(dirname $(readlink -f $0))
-cd $BASEDIR/..
+source $BASEDIR/bin/download-spark.sh
+
+# Set default values
+LOCAL_MODE=false
+SPARK_MASTER="spark://127.0.0.1:7077"
+CORES=2
+
 
 function usage {
   echo -e "Usage: $0 <Options> <Job arguments>\n\
@@ -16,18 +22,6 @@ Options:\n\
 "
 }
 
-# find spark-submit
-if [ ! -z $SPARK_HOME ]; then
-  SPARK_SUBMIT="$SPARK_HOME/bin/spark-submit"
-else
-  SPARK_SUBMIT=$(which spark-submit)
-fi
-
-if [ -z "$SPARK_SUBMIT" ]; then
-  echo "ERROR: Either have spark-submit on the PATH or SPARK_HOME must be set. Exiting."
-  usage
-  exit 1
-fi
 
 ARGUMENTS=()
 # find spark master argument
@@ -50,24 +44,44 @@ while [[ $# > 0 ]]; do
   fi
 done
 
-if [ -z "$SPARK_MASTER" ]; then
-  echo "ERROR: Need spark master URL to be specifies with --master <URL> . Exiting."
-  usage
-  exit 2
+# find spark-submit
+
+if [ $LOCAL_MODE = false ]; then
+  if [ ! -z $SPARK_HOME ]; then
+    SPARK_SUBMIT="$SPARK_HOME/bin/spark-submit"
+  else
+    SPARK_SUBMIT=$(which spark-submit)
+  fi
+echo ff
+  if [ -z "$SPARK_SUBMIT" ]; then
+    echo "ERROR: Either have spark-submit on the PATH or SPARK_HOME must be set. Exiting."
+    usage
+    exit 1
+  fi
+  
+  if [ -z "$SPARK_MASTER" ]; then
+    echo "ERROR: Need spark master URL to be specifies with --master <URL> . Exiting."
+    usage
+    exit 2
+  fi
+else
+  SPARK_SUBMIT=$BASEDIR/lib/$EXTRACTED_SPARK_FOLDER_NAME/bin/spark-submit
 fi
 
+
 if [ -z "$CORES" ]; then
-  echo "ERROR: Need number of cores to be specifies at cli with --total-executor-cores <NUMBER> . Exiting."
-  usage
-  exit 3
+  CORES=2
+  echo "INFO: Number of cores is not specified at cli. Use default value --total-executor-cores $CORES. "
 fi
 
 if [ $LOCAL_MODE = true  ]; then
-  export SPARK_MASTER_HOST=127.0.0.1
+  echo "Start local Spark"
+  SPARK_MASTER_HOST=127.0.0.1
+  export "SPARK_MASTER_HOST="$SPARK_MASTER_HOST
+  echo $SPARK_HOME/sbin/start-master.sh
   $SPARK_HOME/sbin/start-master.sh
-  $SPARK_HOME/sbin/start-slave.sh
-  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
+  $SPARK_HOME/sbin/start-slave.sh $SPARK_MASTER_HOST:7077
+  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/conf/log4j.properties,$BASEDIR/conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
 else
-  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/../conf/log4j.properties,$BASEDIR/../conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
+  exec $SPARK_SUBMIT --master $SPARK_MASTER --total-executor-cores $CORES --files $BASEDIR/conf/log4j.properties,$BASEDIR/conf/job-parameter.json --class ${package}.${job-name} target/${artifactId}-${version}-jar-with-dependencies.jar ${symbol_dollar}{ARGUMENTS[@]}
 fi
-cd $ORIGDIR
