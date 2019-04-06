@@ -6,11 +6,12 @@ import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream.InputDStream
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import com.seeburger.research.kafka.cli.{Config, Options}
 import scala.collection.mutable.Queue
 import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Statement
+import ${package}.cli.Options
+import ${package}.cli.Config
 
 /**
  * @author <author@name.org>

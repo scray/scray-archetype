@@ -5,13 +5,14 @@ import org.apache.spark.SparkContext
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext._
 import org.apache.spark._
-import com.seeburger.research.kafka.data.AggregationKey
 import org.apache.spark.rdd.RDD
 import scala.util.Failure
 import scala.util.Success
 import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Statement
+import ${package}.data.AggregationKey
+
 
 /**
  * Class containing all the batch stuff
