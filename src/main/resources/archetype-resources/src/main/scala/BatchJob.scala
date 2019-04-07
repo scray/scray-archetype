@@ -18,7 +18,6 @@ import ${package}.data.AggregationKey
  * Class containing all the batch stuff
  */
 class BatchJob(@transient val sc: SparkContext) extends LazyLogging with Serializable {
-  println(sc.getConf.get("spark.cassandra.connection.host"))
 
   /**
    * get the intial rdd to load data from
@@ -41,7 +40,8 @@ class BatchJob(@transient val sc: SparkContext) extends LazyLogging with Seriali
     data.
       map(x => StreamingJob.saveDataMap(x)).
       // example howto save into Cassandra: saveToCassandra(StreamingJob.keyspace, StreamingJob.tablebatch)
-      foreach(x => println(x))
+      foreach(x => println(x
+        ))
   }
 
   /**
@@ -50,7 +50,6 @@ class BatchJob(@transient val sc: SparkContext) extends LazyLogging with Seriali
   def batchAggregate() = {
     // TODO: define your own job!
     val dataRDD = getBatchRDD.map { row => 
-      (StreamingJob.buildAggregationKey(row), 1L) }.collect { case a if a._1.isDefined => (a._1.get, a._2) }
     val reducedRDD = dataRDD.reduceByKey(_ + _)
     writeBatchRDD(reducedRDD)
   }

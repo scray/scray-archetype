@@ -48,3 +48,4 @@ build.log
 # some generated output should not be gitted
 src-gen
 xtend-gen
+/bin/

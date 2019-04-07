@@ -1,6 +1,5 @@
 package ${package}
 
-import kafka.serializer.{Decoder, StringDecoder}
 import org.apache.spark._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
