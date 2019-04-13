@@ -33,3 +33,9 @@ For the url of the master there are several options:
 - <code>spark://&lt;IP&gt;:&lt;Port&gt;</code> (default port 7077)
 - <code>yarn-client</code> (run a job with a local client but execute on a Hadoop yarn cluster of spark workers)
 - <code>yarn-cluster</code> (run the client and the workers of the Spark job on a Hadoop yarn cluster)
+
+##### Example start batch job
+      ./bin/submit-job.sh --local-mode --master spark://127.0.0.1:7077 --total-executor-cores 2 -b -m spark://127.0.0.1:7077
+      
+##### Example start streaming job     
+      ./bin/submit-job.sh --local-mode --master spark://127.0.0.1:7077 --total-executor-cores 2 -m spark://127.0.0.1:7077 -t db-nifi -k www.db.opendata.s-node.de:9092 -p /tmp/
