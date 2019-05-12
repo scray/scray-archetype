@@ -32,7 +32,7 @@ object Options extends LazyLogging {
     opt[String]('p', "checkpointPath") action { (x, c) =>
       c.copy(checkpointPath = x) } text("Path (default: hdfs://localhost:8020/user/hadoop/aggmsgs)")
     opt[Int]('d', "checkpointDelay") action { (x, c) =>
-       c.copy(seconds = x) } text("number of milliseconds between two checkpoints (default: 10000)")
+       c.copy(checkpointDuration = x) } text("number of milliseconds between two checkpoints (default: 10000)")
     opt[Int]('n', "numberOfBatchVersions") action { (x, c) =>
       c.copy(numberOfBatchVersions = x) } text("number of versions for one batch job (default: 3)")
     opt[Int]('o', "numberOfOnlineVersions") action { (x, c) =>
