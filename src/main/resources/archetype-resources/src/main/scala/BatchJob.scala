@@ -13,7 +13,6 @@ import com.datastax.driver.core.ResultSet
 import com.datastax.driver.core.Statement
 import ${package}.data.AggregationKey
 
-
 /**
  * Class containing all the batch stuff
  */
@@ -32,25 +31,14 @@ class BatchJob(@transient val sc: SparkContext) extends LazyLogging with Seriali
     sc.parallelize(data)
   }
 
-  /**
-   * write resulting RDD into some storage or trigger external side effects
-   */
-  def writeBatchRDD(data: RDD[(AggregationKey, Long)]) = {
-    // TODO: define place to write data to
-    data.
-      map(x => StreamingJob.saveDataMap(x)).
-      // example howto save into Cassandra: saveToCassandra(StreamingJob.keyspace, StreamingJob.tablebatch)
-      foreach(x => println(x
-        ))
-  }
 
   /**
    * do the job
    */
   def batchAggregate() = {
     // TODO: define your own job!
-    val dataRDD = getBatchRDD.map { row => 
+    val dataRDD = getBatchRDD.map(row => ((row._1), 1))
     val reducedRDD = dataRDD.reduceByKey(_ + _)
-    writeBatchRDD(reducedRDD)
+    .map(xx => println("Number of rows: " + xx))
   }
 }
