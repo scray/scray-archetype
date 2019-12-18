@@ -99,7 +99,7 @@ object ${job-name} extends LazyLogging {
       ssc.awaitTermination()
   }
 
-  def main(args : Array[String]) = {
+  def main(args : Array[String]): Unit = {
    Options.parse(args) match {
       case Some(config) =>
 
