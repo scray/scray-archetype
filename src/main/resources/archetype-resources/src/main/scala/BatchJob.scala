@@ -1,6 +1,6 @@
 package ${package}
 
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.SparkContext
 import com.datastax.spark.connector._
 import org.apache.spark.SparkContext._

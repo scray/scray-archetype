@@ -4,7 +4,7 @@ import org.apache.spark._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming._
 import org.apache.spark.streaming.dstream.InputDStream
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import scala.collection.mutable.Queue
 import com.datastax.driver.core.querybuilder.Insert
 import com.datastax.driver.core.ResultSet

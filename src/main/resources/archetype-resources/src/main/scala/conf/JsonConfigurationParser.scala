@@ -4,7 +4,7 @@ import scala.io.Source._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 class JsonConfigurationParser  extends LazyLogging {
   val mapper = new ObjectMapper()
