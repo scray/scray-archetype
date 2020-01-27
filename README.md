@@ -17,7 +17,7 @@ To use the archetype artefacts they must either be pulled from a archetype-repo 
 ### Create project from archetype with maven
 Archetypes are enhancements of maven ("plugins") that can generate new projects. To use them classical maven coordinates must be provided.
 
-    mvn archetype:generate -DarchetypeGroupId=org.scray -DarchetypeArtifactId=scray-archetype -DarchetypeVersion=0.10.0 -Dhdfs-uri=hdfs://127.0.0.1:8020 -Dyarn-resourcemanager=127.0.0.1
+    mvn archetype:generate -DarchetypeGroupId=org.scray -DarchetypeArtifactId=scray-archetype -DarchetypeVersion=1.1.4-SNAPSHOT -Dhdfs-uri=hdfs://127.0.0.1:8020 -Dyarn-resourcemanager=127.0.0.1
 
 ### Running the jobs:
 
