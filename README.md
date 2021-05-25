@@ -6,6 +6,11 @@ This archetype supports writing Scray compatible jobs by hand by creating:
 - bin directory with shell script to start the jobs
 - minimal job structure
 
+## Versions
+| Spark | Java | Scala | Spark | Hadoop |
+| ------| ---- |-------|-------|--------|
+| 3.1.1 | 11   | 2.12  | 3.1.1 | 2.7    |
+
 ## Usage:
 
 ### Building

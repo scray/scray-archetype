@@ -1,33 +1,11 @@
 package ${package}
 
-import java.util.concurrent.locks.ReentrantLock
-
-import scala.collection.convert.decorateAsScala.asScalaIteratorConverter
-import scala.collection.convert.decorateAsScala.asScalaBufferConverter
-import scala.collection.mutable.HashMap
-import scala.reflect.runtime.universe
-
-import org.apache.spark.SparkConf
-import org.apache.spark.streaming.Seconds
-import org.apache.spark.streaming.State
-import org.apache.spark.streaming.StateSpec
 import org.apache.spark.streaming.StreamingContext
 import org.apache.spark.streaming.dstream.DStream
-import org.apache.spark.streaming.dstream.DStream.toPairDStreamFunctions
 
-import com.datastax.driver.core.PreparedStatement
-import com.datastax.driver.core.Row
-import com.datastax.driver.core.Session
-import com.datastax.spark.connector.CassandraRow
-import com.datastax.spark.connector.rdd.CassandraTableScanRDD
-import com.datastax.spark.connector.streaming.toDStreamFunctions
-import com.datastax.spark.connector.streaming.toStreamingContextFunctions
+import com.typesafe.scalalogging.LazyLogging
 import ${package}.data.AggregationKey
 import com.typesafe.scalalogging.LazyLogging
-import com.datastax.driver.core.querybuilder.Insert
-import com.datastax.driver.core.ResultSet
-import com.datastax.driver.core.Statement
-
 
 /**
  * job that transforms data :)
