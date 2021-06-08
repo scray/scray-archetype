@@ -21,16 +21,25 @@ To use the archetype artefacts they must either be pulled from a archetype-repo 
 
 ### Create project from archetype with maven
 Archetypes are enhancements of maven ("plugins") that can generate new projects. To use them classical maven coordinates must be provided.
-
-    mvn archetype:generate -DarchetypeGroupId=org.scray -DarchetypeArtifactId=scray-archetype -DarchetypeVersion=1.1.4-SNAPSHOT -Dhdfs-uri=hdfs://127.0.0.1:8020 -Dyarn-resourcemanager=127.0.0.1
-
+```
+mvn archetype:generate                  \
+  -DarchetypeGroupId=org.scray          \
+  -DarchetypeArtifactId=scray-archetype \
+  -DarchetypeVersion=1.1.4-SNAPSHOT	
+```  
 ### Running the jobs:
 
 #### Run in local Spark Standalone Mode  
-  A local spark node will be started and this job will be executed on this node.
-  Example:     
-    ./bin/submit-job.sh --local-mode --master spark://<YOUR_LOCAL_IP>:7077 --total-executor-cores 4 -b -m spark://<YOUR_LOCAL_IP>:7077
-
+  A local spark node will be started and this job will be executed on this node.  
+  
+  Example:  
+```
+./bin/submit-job.sh                      \ 
+  --local-mode                           \
+  --master spark://<YOUR_LOCAL_IP>:7077  \
+  --total-executor-cores 4               \
+  -b
+```
 The options <code>--master</code> with the Spark master URL and <code>--total-executor-cores</code> providing the number of cores are required by the runner script.
 
     
@@ -40,7 +49,23 @@ For the url of the master there are several options:
 - <code>yarn-cluster</code> (run the client and the workers of the Spark job on a Hadoop yarn cluster)
 
 ##### Example start batch job
-      ./bin/submit-job.sh --local-mode --master spark://127.0.0.1:7077 --total-executor-cores 2 -b -m spark://127.0.0.1:7077
+```
+./bin/submit-job.sh                \
+  --local-mode                     \
+  --master spark://127.0.0.1:7077  \
+  --total-executor-cores 2         \
+  -b                               \
+  -m spark://127.0.0.1:7077
+```      
       
-##### Example start streaming job     
-      ./bin/submit-job.sh --local-mode --master spark://127.0.0.1:7077 --total-executor-cores 2 -m spark://127.0.0.1:7077 -t db-nifi -k www.db.opendata.s-node.de:9092 -p /tmp/
+##### Example start streaming job  
+```
+./bin/submit-job.sh                 \
+  --local-mode                      \
+  --master spark://127.0.0.1:7077   \
+  --total-executor-cores 2          \
+  -m spark://127.0.0.1:7077         \
+  -t db-nifi                        \
+  -k www.db.opendata.s-node.de:9092 \
+  -p /tmp/
+```
