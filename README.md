@@ -7,9 +7,9 @@ This archetype supports writing Scray compatible jobs by hand by creating:
 - minimal job structure
 
 ## Versions
-| Spark | Java | Scala | Spark | Hadoop |
-| ------| ---- |-------|-------|--------|
-| 3.1.1 | 11   | 2.12  | 3.1.1 | 2.7    |
+| Java | Scala | Spark | Hadoop |
+| ---- |-------|-------|--------|
+| 11   | 2.12  | 3.1.1 | 2.7    |
 
 ## Usage:
 
