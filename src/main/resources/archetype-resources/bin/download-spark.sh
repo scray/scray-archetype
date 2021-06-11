@@ -34,7 +34,7 @@ export YARN_CONF_DIR=$YARN_CONF_DIR
 
 function downloadSparkBinaries {
         echo $SPARK_BINARY_URL
-        wget $SPARK_BINARY_URL -O $BASEDIR/lib/spark.tgz
+        curl $SPARK_BINARY_URL -o $BASEDIR/lib/spark.tgz
         tar -xvzf $BASEDIR/lib/spark.tgz -C $BASEDIR/lib/
 }
 
