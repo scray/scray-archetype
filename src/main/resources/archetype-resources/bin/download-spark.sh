@@ -3,7 +3,7 @@
 BINDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASEDIR=`eval "cd $BINDIR/../;pwd;cd - > /dev/null"`
 
-SPARK_VERSION=3.1.1
+SPARK_VERSION=3.2.0
 HADOOP_VERSION=2.7
 SPARK_BINARY_URL="http://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz"
 

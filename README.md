@@ -9,7 +9,7 @@ This archetype supports writing Scray compatible jobs by hand by creating:
 ## Versions
 | Java | Scala | Spark | Hadoop |
 | ---- |-------|-------|--------|
-| 11   | 2.12  | 3.1.1 | 2.7    |
+| 11   | 2.12  | 3.2.1 | 2.7    |
 
 ## Usage:
 
@@ -25,7 +25,7 @@ Archetypes are enhancements of maven ("plugins") that can generate new projects.
 mvn archetype:generate                  \
   -DarchetypeGroupId=org.scray          \
   -DarchetypeArtifactId=scray-archetype \
-  -DarchetypeVersion=1.1.4-SNAPSHOT	
+  -DarchetypeVersion=1.1.5-SNAPSHOT	
 ```  
 ### Running the jobs:
 
