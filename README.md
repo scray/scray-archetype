@@ -9,7 +9,7 @@ This archetype supports writing Scray compatible jobs by hand by creating:
 ## Versions
 | Java | Scala | Spark | Hadoop |
 | ---- |-------|-------|--------|
-| 11   | 2.12  | 3.2.1 | 2.7    |
+| 11   | 2.12  | 3.2.0 | 2.7    |
 
 ## Usage:
 
