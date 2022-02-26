@@ -1,6 +1,6 @@
 # Scray Maven Archetype
 
-This archetype supports writing Scray compatible jobs by hand by creating:
+This archetype supports writing Scray compatible jobs by creating:
 - directory structure
 - pom.xml that creates an ueberjar for the job
 - bin directory with shell script to start the jobs
@@ -38,7 +38,8 @@ mvn archetype:generate                  \
   --local-mode                           \
   --master spark://<YOUR_LOCAL_IP>:7077  \
   --total-executor-cores 4               \
-  -b
+  -b                                     \
+  -m  spark://127.0.0.1:7077
 ```
 The options <code>--master</code> with the Spark master URL and <code>--total-executor-cores</code> providing the number of cores are required by the runner script.
 
