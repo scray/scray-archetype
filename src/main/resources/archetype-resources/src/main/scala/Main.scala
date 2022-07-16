@@ -11,7 +11,7 @@ import ${package}.cli.Config
 /**
  * @author <author@name.org>
  */
-object ${job-name} extends LazyLogging {
+object Main extends LazyLogging {
   
   /**
    * creates a Spark Streaming context
