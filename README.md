@@ -8,8 +8,8 @@ This archetype supports writing Scray compatible jobs by creating:
 
 ## Versions
 | Java | Scala | Spark | Hadoop |
-| ---- |-------|-------|--------|
-| 11   | 2.12  | 3.2.0 | 2.7    |
+|------|-------|-------|--------|
+| 17   | 2.13  | 3.5.0 | 3.4    |
 
 ## Usage:
 
@@ -25,7 +25,7 @@ Archetypes are enhancements of maven ("plugins") that can generate new projects.
 mvn archetype:generate                  \
   -DarchetypeGroupId=org.scray          \
   -DarchetypeArtifactId=scray-archetype \
-  -DarchetypeVersion=1.1.5-SNAPSHOT	
+  -DarchetypeVersion=1.1.6-SNAPSHOT	
 ```  
 ### Running the jobs:
 
