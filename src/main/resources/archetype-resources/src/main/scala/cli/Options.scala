@@ -21,7 +21,7 @@ object Options extends LazyLogging {
       c.copy(kafkaTopic = Some(Array(x))) } text("provide Kafka topic to consume from")
     opt[String]('h', "hdfs") action { (x, c) =>
       c.copy(hdfsDStreamURL = Some(x)) } text("provide URL into HDFS if sourcing from HDFS is desired")
-    opt[String]('m', "master") required() action { (x, c) =>
+    opt[String]('m', "master").required() action { (x, c) =>
       c.copy(master = x) } text("provide URL to Spark master")
     opt[String]('c', "cassandra") action { (x, c) =>
       c.copy(cassandraHost = Some(x)) } text("provide network coordinates to a node in the Cassandra cluster")
